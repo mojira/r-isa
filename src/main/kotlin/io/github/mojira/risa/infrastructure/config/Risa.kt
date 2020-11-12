@@ -14,6 +14,7 @@ object Risa : ConfigSpec() {
         object Jira : ConfigSpec() {
             val username by required<String>()
             val password by required<String>()
+            val url by required<String>()
         }
 
         val discordLogWebhook by optional<String?>(
