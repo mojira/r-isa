@@ -31,6 +31,7 @@ buildscript {
     }
 }
 
+val logBackVersion = "1.2.3"
 val arrowVersion = "0.10.4"
 val kotestVersion = "4.2.3"
 
@@ -42,6 +43,10 @@ dependencies {
     implementation("net.dean.jraw", "JRAW", "1.1.0")
     implementation("com.uchuhimo", "konf", "0.22.1")
     implementation("com.github.rcarz", "jira-client", "master-SNAPSHOT")
+    implementation("com.github.napstr", "logback-discord-appender", "1.0.0")
+    implementation("org.slf4j", "slf4j-api", "1.7.25")
+    implementation("ch.qos.logback", "logback-classic", logBackVersion)
+    implementation("ch.qos.logback", "logback-core", logBackVersion)
 
     testImplementation("io.kotest", "kotest-assertions-core-jvm", kotestVersion)
     testImplementation("io.kotest", "kotest-runner-junit5", kotestVersion)

@@ -1,0 +1,61 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs\risa.html</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>risa-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <charset>UTF-8</charset>
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>%d{HH:mm:ss.SSS}%thread%level%logger%line%msg</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="DISCORD" class="com.github.napstr.logback.DiscordAppender">
+        <webhookUri />
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>`%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg`%n%replace(```%ex{full}```){'``````',''}%nopex</pattern>
+        </layout>
+        <username>r/isa</username>
+        <!--<avatarUrl>https://raw.githubusercontent.com/mojira/r-isa/master/r-isa.png</avatarUrl>-->
+        <tts>false</tts>
+    </appender>
+
+    <appender name="ASYNC_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="DISCORD" />
+    </appender>
+
+    <appender name="ERROR_DISCORD" class="com.github.napstr.logback.DiscordAppender">
+        <webhookUri />
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>`%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg`%n```%ex{full}```</pattern>
+        </layout>
+        <username>r/isa</username>
+        <!--<avatarUrl>https://raw.githubusercontent.com/mojira/r-isa/master/r-isa.png</avatarUrl>-->
+        <tts>false</tts>
+    </appender>
+
+    <appender name="ASYNC_ERROR_DISCORD" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ERROR_DISCORD" />
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="ASYNC_DISCORD" />
+        <appender-ref ref="ASYNC_ERROR_DISCORD" />
+    </root>
+</configuration>
