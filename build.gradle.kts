@@ -1,4 +1,5 @@
 plugins {
+    java
     kotlin("jvm") version "1.4.10"
     application
     id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
@@ -38,11 +39,8 @@ dependencies {
     implementation("io.arrow-kt", "arrow-core", arrowVersion)
     implementation("io.arrow-kt", "arrow-syntax", arrowVersion)
     implementation("io.arrow-kt", "arrow-fx", arrowVersion)
-<<<<<<< HEAD
     implementation("net.dean.jraw", "JRAW", "1.1.0")
-=======
     implementation("com.uchuhimo", "konf", "0.22.1")
->>>>>>> 9233b9d (Support configuration)
 
     testImplementation("io.kotest", "kotest-assertions-core-jvm", kotestVersion)
     testImplementation("io.kotest", "kotest-runner-junit5", kotestVersion)
