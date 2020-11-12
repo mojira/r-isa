@@ -39,6 +39,7 @@ dependencies {
     implementation("io.arrow-kt", "arrow-core", arrowVersion)
     implementation("io.arrow-kt", "arrow-syntax", arrowVersion)
     implementation("io.arrow-kt", "arrow-fx", arrowVersion)
+    implementation("net.dean.jraw", "JRAW", "1.1.0")
 
     testImplementation("io.kotest", "kotest-assertions-core-jvm", kotestVersion)
     testImplementation("io.kotest", "kotest-runner-junit5", kotestVersion)
@@ -65,7 +66,7 @@ tasks {
 }
 
 application {
-    mainClassName = "com.mojang.bugs.risa.MainKt"
+    mainClassName = "io.github.mojira.risa.MainKt"
 }
 
 detekt {

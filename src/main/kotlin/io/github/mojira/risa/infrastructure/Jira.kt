@@ -1,9 +1,9 @@
-package com.mojang.bugs.risa.infrastructure
+package io.github.mojira.risa.infrastructure
 
-import com.mojang.bugs.risa.domain.JiraClient
-import com.mojang.bugs.risa.domain.Snapshot
-import com.mojang.bugs.risa.domain.TicketId
-import com.mojang.bugs.risa.domain.TicketTitle
+import io.github.mojira.risa.domain.JiraClient
+import io.github.mojira.risa.domain.Snapshot
+import io.github.mojira.risa.domain.TicketId
+import io.github.mojira.risa.domain.TicketTitle
 
 fun loginToJira(): JiraClient {
     TODO()
