@@ -15,7 +15,7 @@ import io.github.mojira.risa.infrastructure.previousSnapshotsPosts
 fun main() {
     val config = readConfig()
 
-    val redditCredentials = loginToReddit()
+    val redditCredentials = loginToReddit(config)
     val jiraClient = loginToJira()
 
     val previousSnapshots = previousSnapshotsPosts()

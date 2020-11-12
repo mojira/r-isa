@@ -4,10 +4,18 @@ import com.uchuhimo.konf.ConfigSpec
 
 object Risa : ConfigSpec() {
     object Credentials : ConfigSpec() {
-        val redditUsername by required<String>()
-        val redditPassword by required<String>()
-        val mojiraUsername by required<String>()
-        val mojiraPassword by required<String>()
+        object Reddit : ConfigSpec() {
+            val username by required<String>()
+            val password by required<String>()
+            val clientId by required<String>()
+            val clientSecret by required<String>()
+        }
+
+        object Jira : ConfigSpec() {
+            val username by required<String>()
+            val password by required<String>()
+        }
+
         val discordLogWebhook by optional<String?>(
             null,
             description = "Webhook to post log in a Discord channel"
