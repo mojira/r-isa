@@ -16,12 +16,12 @@ fun main() {
     val config = readConfig()
 
     val redditCredentials = loginToReddit(config)
-    val jiraClient = loginToJira()
+    val jiraClient = loginToJira(config)
 
     val previousSnapshots = previousSnapshotsPosts()
     val currentSnapshot = getCurrentSnapshot(jiraClient)
 
-    val ticketsForSnapshot = getTicketsForSnapshot(currentSnapshot, jiraClient)
+    val ticketsForSnapshot = getTicketsForSnapshot(jiraClient, currentSnapshot)
     val report = generateReport(ticketsForSnapshot, currentSnapshot, previousSnapshots)
 
     val currentPost = getOrCreateCurrentPost(redditCredentials)

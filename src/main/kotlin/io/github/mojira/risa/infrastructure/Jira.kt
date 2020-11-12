@@ -1,13 +1,17 @@
 package io.github.mojira.risa.infrastructure
 
-import io.github.mojira.risa.domain.JiraClient
+import com.uchuhimo.konf.Config
 import io.github.mojira.risa.domain.Snapshot
 import io.github.mojira.risa.domain.TicketId
 import io.github.mojira.risa.domain.TicketTitle
+import io.github.mojira.risa.infrastructure.config.Risa
+import net.rcarz.jiraclient.JiraClient
+import net.rcarz.jiraclient.TokenCredentials
 
-fun loginToJira(): JiraClient {
-    TODO()
-}
+fun loginToJira(config: Config) = JiraClient(
+    config[Risa.Credentials.Jira.url],
+    TokenCredentials(config[Risa.Credentials.Jira.username], config[Risa.Credentials.Jira.password])
+)
 
 fun getCurrentSnapshot(jiraClient: JiraClient): Snapshot {
     TODO()

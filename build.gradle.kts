@@ -41,6 +41,7 @@ dependencies {
     implementation("io.arrow-kt", "arrow-fx", arrowVersion)
     implementation("net.dean.jraw", "JRAW", "1.1.0")
     implementation("com.uchuhimo", "konf", "0.22.1")
+    implementation("com.github.rcarz", "jira-client", "master-SNAPSHOT")
 
     testImplementation("io.kotest", "kotest-assertions-core-jvm", kotestVersion)
     testImplementation("io.kotest", "kotest-runner-junit5", kotestVersion)
