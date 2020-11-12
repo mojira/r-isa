@@ -10,7 +10,6 @@ import net.dean.jraw.http.UserAgent
 import net.dean.jraw.oauth.Credentials
 import net.dean.jraw.oauth.OAuthHelper
 
-
 fun loginToReddit(config: Config): RedditClient {
     val userAgent = UserAgent("r-isa", "com.mojang.bugs.risa", "v1.0.0", "urielsalis")
     val username = config[Risa.Credentials.Reddit.username]
