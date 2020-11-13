@@ -7,4 +7,3 @@ Please note that this project uses [Ktlint](https://github.com/pinterest/ktlint)
 - Include tests, we try to use real examples when possible (in the crash module for example)
 - You are encouraged to do mini refactors when you can see a improvement, but try to keep them to a separate PR if they get too big
 - Separate complex topics in different PRs, for example: 1 module per PR, 1 big refactor separated from a module
-- Test it on bugs.mojang.com in MCTEST or a private MC ticket(and let a mod know beforehand to trash it after you are done)
