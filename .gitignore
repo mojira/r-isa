@@ -5,4 +5,4 @@ secret.yml
 /.kotest
 /out/
 /logs/
-backup.bin
+posts.json

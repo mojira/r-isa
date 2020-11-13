@@ -47,6 +47,7 @@ dependencies {
     implementation("org.slf4j", "slf4j-api", "1.7.25")
     implementation("ch.qos.logback", "logback-classic", logBackVersion)
     implementation("ch.qos.logback", "logback-core", logBackVersion)
+    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.11.+")
 
     testImplementation("io.kotest", "kotest-assertions-core-jvm", kotestVersion)
     testImplementation("io.kotest", "kotest-runner-junit5", kotestVersion)
