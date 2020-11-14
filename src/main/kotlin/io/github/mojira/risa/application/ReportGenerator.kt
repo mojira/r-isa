@@ -8,13 +8,13 @@ import io.github.mojira.risa.domain.Ticket
 @SuppressWarnings("MaxLineLength")
 fun generateReport(
     ticketsForSnapshot: List<Ticket>,
-    currentSnapshot: Snapshot,
-    previousSnapshots: Map<Snapshot, RedditPost>
+    associatedSnapshot: Snapshot,
+    snapshotPosts: Map<Snapshot, RedditPost>
 ): Report = buildString {
-    append("[Mojang's Release Post](https://www.minecraft.net/en-us/article/minecraft-snapshot-${currentSnapshot.name})")
-    append(" ~ [Last Report](https://www.reddit.com/r/Mojira/comments/${previousSnapshots.getPreviousOf(currentSnapshot)})")
+    append("[Mojang's Release Post](https://www.minecraft.net/en-us/article/minecraft-snapshot-${associatedSnapshot.name})")
+    append(" ~ [Last Report](https://www.reddit.com/r/Mojira/comments/${snapshotPosts.getPreviousOf(associatedSnapshot)})")
     append("\n\n----\n\n")
-    append("New bugs reported since the release of ${currentSnapshot.name}:  \n\n")
+    append("New bugs reported since the release of ${associatedSnapshot.name}:  \n\n")
     append("|Report #|Description|Status|Comment|\n|-----|-----|-----|-----|\n")
     ticketsForSnapshot.forEach {
         append("|[${it.id}](https://bugs.mojang.com/browse/${it.id})|${it.title}|${it.resolution}|${it.comment}\n")
@@ -25,15 +25,15 @@ fun generateReport(
     append("**If you found a bug and you are not sure whether it has already been created or not, ask here!**\n")
     append("\n----\n")
     append("*History:*  \n")
-    append(previousSnapshots
+    append(snapshotPosts
         .toSortedMap(Comparator.comparing { it.releasedDate })
         .map { "[${it.key.name}](https://www.reddit.com/r/Mojira/comments/${it.value})" }
         .joinToString(" ~ "))
-    append(" ~ **${currentSnapshot.name}**\n")
+    append(" ~ **${associatedSnapshot.name}**\n")
 }
 
-private fun Map<Snapshot, RedditPost>.getPreviousOf(currentSnapshot: Snapshot): RedditPost = this
-    .filter { it.key.releasedDate < currentSnapshot.releasedDate }
+private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditPost = this
+    .filter { it.key.releasedDate < snapshot.releasedDate }
     .maxByOrNull { it.key.releasedDate }
     ?.value
     ?: ""

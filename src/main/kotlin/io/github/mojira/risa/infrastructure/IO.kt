@@ -16,7 +16,7 @@ import io.github.mojira.risa.infrastructure.config.Risa
 import java.io.File
 import java.time.Instant
 
-fun previousSnapshotsPosts(mapper: ObjectMapper): Map<Snapshot, RedditPost> = with(File("posts.json")) {
+fun readSnapshotPosts(mapper: ObjectMapper): Map<Snapshot, RedditPost> = with(File("posts.json")) {
     if (exists()) {
         mapper.readValue(this)
     } else {
