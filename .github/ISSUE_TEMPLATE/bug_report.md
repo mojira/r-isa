@@ -9,6 +9,8 @@ assignees: ''
 
 ## The Bug
 
-## Example Ticket
+## Example
 
-## Expected behavior
+<!-- Post the link to the bugtracker report or a screenshot if applicable. -->
+
+## Expected Behavior
