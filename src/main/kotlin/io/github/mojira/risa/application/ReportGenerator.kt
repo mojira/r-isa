@@ -21,7 +21,7 @@ fun generateReport(
     }
     append("\n")
     append("^(This table is generated automatically; it might contain issues that are invalid or not contain issues that are currently resolved)  \n")
-    append("^To ^report ^any ^problems ^with ^the ^auto ^generation, ^please ^go ^to ^our [^Discord ^server! ](https://discord.gg/rpCyfKV)  \n")
+    append("^To ^report ^any ^problems ^with ^the ^auto ^generation, ^please ^go ^to ^our [^(Discord server!) ](https://discord.gg/rpCyfKV)  \n")
     append("**If you found a bug and you are not sure whether it has already been created or not, ask here!**\n")
     append("\n----\n")
     append("*History:*  \n")
