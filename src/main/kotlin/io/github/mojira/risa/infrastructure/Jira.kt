@@ -37,10 +37,10 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, currentSnapshot: Snapshot): Li
             "*all"
         )
         .issues
-        .filter { it.versions.containsAOlderVersionThanCurrent(currentSnapshot.releasedDate) }
+        .filter { it.versions.containsAnOlderVersionThanCurrent(currentSnapshot.releasedDate) }
         .map { Ticket(it.key, it.summary, it.parseResolution(), "") }
 
-fun Issue.parseResolution(): TicketResolution = if (isUnResolved(resolution) || isOpen(status)) {
+fun Issue.parseResolution(): TicketResolution = if (isUnresolved(resolution) || isOpen(status)) {
     "Open"
 } else {
     resolution.name
@@ -48,7 +48,7 @@ fun Issue.parseResolution(): TicketResolution = if (isUnResolved(resolution) || 
 
 fun isOpen(status: Status) = status.name == "Reopened" || status.name == "Open"
 
-fun isUnResolved(resolution: Resolution?) = resolution == null || resolution.name == "Unresolved"
+fun isUnresolved(resolution: Resolution?) = resolution == null || resolution.name == "Unresolved"
 
-private fun List<Version>.containsAOlderVersionThanCurrent(time: Instant) =
+private fun List<Version>.containsAnOlderVersionThanCurrent(time: Instant) =
     any { it.releaseDate.toVersionReleaseInstant() < time }
