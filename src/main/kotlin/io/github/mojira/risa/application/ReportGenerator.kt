@@ -8,16 +8,16 @@ import io.github.mojira.risa.domain.Ticket
 @SuppressWarnings("MaxLineLength")
 fun generateReport(
     ticketsForSnapshot: List<Ticket>,
-    associatedSnapshot: Snapshot,
+    currentSnapshot: Snapshot,
     snapshotPosts: Map<Snapshot, RedditPost>
 ): Report = buildString {
-    append("[Mojang's Release Post](https://www.minecraft.net/en-us/article/minecraft-snapshot-${associatedSnapshot.name})")
-    append(" ~ [Last Report](https://www.reddit.com/r/Mojira/comments/${snapshotPosts.getPreviousOf(associatedSnapshot)})")
+    append("[Mojang's Release Post](https://www.minecraft.net/en-us/article/minecraft-snapshot-${currentSnapshot.name})")
+    append(" ~ [Last Report](https://www.reddit.com/r/Mojira/comments/${snapshotPosts.getPreviousOf(currentSnapshot)})")
     append("\n\n----\n\n")
-    append("New bugs reported since the release of ${associatedSnapshot.name}:  \n\n")
+    append("New bugs reported since the release of ${currentSnapshot.name}:  \n\n")
     append("|Report #|Description|Status|Comment|\n|-----|-----|-----|-----|\n")
     ticketsForSnapshot.forEach {
-        append("|[${it.id}](https://bugs.mojang.com/browse/${it.id})|${it.title}|${it.resolution}|${it.comment}\n")
+        append(it.toTableRow())
     }
     append("\n")
     append("^(This table is generated automatically; it might contain issues that are invalid or not contain issues that are currently resolved)  \n")
@@ -29,7 +29,7 @@ fun generateReport(
         .toSortedMap(Comparator.comparing { it.releasedDate })
         .map { "[${it.key.name}](https://www.reddit.com/r/Mojira/comments/${it.value})" }
         .joinToString(" ~ "))
-    append(" ~ **${associatedSnapshot.name}**\n")
+    append(" ~ **${currentSnapshot.name}**\n")
 }
 
 private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditPost = this
@@ -37,3 +37,12 @@ private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditP
     .maxByOrNull { it.key.releasedDate }
     ?.value
     ?: ""
+
+private fun Ticket.toTableRow(): String {
+    val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
+    return if (strikethrough) {
+        "|[~~${id}~~](https://bugs.mojang.com/browse/${id})|~~${title}~~|${resolution}|${comment}\n"
+    } else {
+        "|[${id}](https://bugs.mojang.com/browse/${id})|${title}|${resolution}|${comment}\n"
+    }
+}
