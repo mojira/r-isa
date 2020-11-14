@@ -13,6 +13,8 @@ import net.rcarz.jiraclient.TokenCredentials
 import net.rcarz.jiraclient.Version
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
 
 private val versionDateFormat = SimpleDateFormat("yyyy-MM-dd")
 private fun String.toVersionReleaseInstant() = versionDateFormat.parse(this).toInstant()
@@ -51,7 +53,7 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, currentSnapshot: Snapshot): Li
 
 @SuppressWarnings("MaxLineLength")
 private fun getJql(currentSnapshot: Snapshot): String =
-    "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\"))"
+    "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND created > ${currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli()} AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\"))"
 
 private fun searchTickets(
     jiraClient: JiraClient,
