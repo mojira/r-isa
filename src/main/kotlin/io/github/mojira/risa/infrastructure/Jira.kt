@@ -5,7 +5,12 @@ import io.github.mojira.risa.domain.Snapshot
 import io.github.mojira.risa.domain.Ticket
 import io.github.mojira.risa.domain.TicketResolution
 import io.github.mojira.risa.infrastructure.config.Risa
-import net.rcarz.jiraclient.*
+import net.rcarz.jiraclient.Issue
+import net.rcarz.jiraclient.JiraClient
+import net.rcarz.jiraclient.Resolution
+import net.rcarz.jiraclient.Status
+import net.rcarz.jiraclient.TokenCredentials
+import net.rcarz.jiraclient.Version
 import java.text.SimpleDateFormat
 import java.time.Instant
 
@@ -69,7 +74,7 @@ private fun searchTickets(
 
     return queryResult
         .issues
-        .filter { it.versions.containsAnOlderVersionThanCurrent(currentSnapshot.releasedDate) }
+        .filter { !it.versions.containsAnOlderVersionThanCurrent(currentSnapshot.releasedDate) }
         .map { Ticket(it.key, it.summary, it.parseResolution(), "") }
 }
 
@@ -84,4 +89,4 @@ fun isOpen(status: Status) = status.name == "Reopened" || status.name == "Open"
 fun isUnresolved(resolution: Resolution?) = resolution == null || resolution.name == "Unresolved"
 
 private fun List<Version>.containsAnOlderVersionThanCurrent(time: Instant) =
-    any { it.releaseDate.toVersionReleaseInstant() < time }
+    any { it.releaseDate == null || it.releaseDate.toVersionReleaseInstant() < time }

@@ -27,7 +27,7 @@ fun readSnapshotPosts(mapper: ObjectMapper): Map<Snapshot, RedditPost> = with(Fi
 fun saveSnapshotPosts(mapper: ObjectMapper, map: Map<Snapshot, RedditPost>) =
     mapper.writeValue(File("posts.json"), map)
 
-fun <K, V> Map<K, V>.add(pair: Pair<K, V>): Map<K, V> = toMutableMap().add(pair)
+fun <K, V> Map<K, V>.add(key: K, value: V): Map<K, V> = toMutableMap().apply { put(key, value) }
 
 fun readConfig(): Config {
     return Config { addSpec(Risa) }

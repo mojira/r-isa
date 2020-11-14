@@ -35,5 +35,5 @@ fun main() {
 
     val currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
     editPost(redditCredentials, currentPost, report)
-    saveSnapshotPosts(mapper, snapshotPosts.add(currentSnapshot to currentPost))
+    saveSnapshotPosts(mapper, snapshotPosts.add(currentSnapshot, currentPost))
 }

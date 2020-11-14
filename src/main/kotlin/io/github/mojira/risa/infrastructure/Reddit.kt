@@ -26,7 +26,7 @@ fun loginToReddit(config: Config): RedditClient {
 
 fun editPost(redditClient: RedditClient, currentPost: RedditPost, report: Report) {
     redditClient
-        .comment(currentPost)
+        .submission(currentPost)
         .edit(report)
 }
 
