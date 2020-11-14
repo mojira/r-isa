@@ -13,12 +13,12 @@ fun setWebhookOfLogger(config: Config) {
     val discordAsync = context.getLogger(Logger.ROOT_LOGGER_NAME).getAppender("ASYNC_DISCORD") as AsyncAppender?
     if (discordAsync != null) {
         val discordAppender = discordAsync.getAppender("DISCORD") as DiscordAppender
-        discordAppender.webhookUri = config[Risa.Credentials.discordLogWebhook]
+        discordAppender.webhookUri = config[Risa.Credentials.Discord.logWebhook]
     }
     val discordErrorAsync =
         context.getLogger(Logger.ROOT_LOGGER_NAME).getAppender("ASYNC_ERROR_DISCORD") as AsyncAppender?
     if (discordErrorAsync != null) {
         val discordErrorAppender = discordErrorAsync.getAppender("ERROR_DISCORD") as DiscordAppender
-        discordErrorAppender.webhookUri = config[Risa.Credentials.discordErrorLogWebhook]
+        discordErrorAppender.webhookUri = config[Risa.Credentials.Discord.errorLogWebhook]
     }
 }

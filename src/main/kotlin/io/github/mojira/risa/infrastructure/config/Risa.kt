@@ -17,13 +17,15 @@ object Risa : ConfigSpec() {
             val url by required<String>()
         }
 
-        val discordLogWebhook by optional<String?>(
-            null,
-            description = "Webhook to post log in a Discord channel"
-        )
-        val discordErrorLogWebhook by optional<String?>(
-            null,
-            description = "Webhook to post errors in a Discord channel"
-        )
+        object Discord : ConfigSpec() {
+            val logWebhook by optional<String?>(
+                null,
+                description = "Webhook to post log in a Discord channel"
+            )
+            val errorLogWebhook by optional<String?>(
+                null,
+                description = "Webhook to post errors in a Discord channel"
+            )
+        }
     }
 }
