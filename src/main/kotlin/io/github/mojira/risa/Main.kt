@@ -1,15 +1,9 @@
 package io.github.mojira.risa
 
-import arrow.core.extensions.option.apply.map
-import ch.qos.logback.classic.AsyncAppender
-import ch.qos.logback.classic.LoggerContext
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.github.napstr.logback.DiscordAppender
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.source.yaml
 import io.github.mojira.risa.application.generateReport
+import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
-import io.github.mojira.risa.infrastructure.config.Risa
 import io.github.mojira.risa.infrastructure.editPost
 import io.github.mojira.risa.infrastructure.getCurrentSnapshot
 import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
@@ -26,7 +20,7 @@ import org.slf4j.LoggerFactory
 val log: Logger = LoggerFactory.getLogger("Risa")
 
 fun main() {
-    val mapper = jacksonObjectMapper()
+    val mapper = jacksonObjectMapper().registerModule(SnapshotModule())
     val config = readConfig()
     setWebhookOfLogger(config)
 
