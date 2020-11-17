@@ -24,6 +24,11 @@ fun readSnapshotPosts(mapper: ObjectMapper): Map<Snapshot, RedditPost> = with(Fi
     }
 }
 
+fun getPreviousSnapshotPost(snapshotPosts: Map<Snapshot, RedditPost>): RedditPost {
+    val previousSnapshot: Snapshot = snapshotPosts.keys.toList()[snapshotPosts.size-1]
+    return snapshotPosts.getValue(previousSnapshot)
+}
+
 fun saveSnapshotPosts(mapper: ObjectMapper, map: Map<Snapshot, RedditPost>) =
     mapper.writeValue(File("posts.json"), map)
 
