@@ -1,45 +1,65 @@
 package io.github.mojira.risa
 
-import arrow.core.extensions.option.apply.map
-import ch.qos.logback.classic.AsyncAppender
-import ch.qos.logback.classic.LoggerContext
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.github.napstr.logback.DiscordAppender
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.source.yaml
 import io.github.mojira.risa.application.generateReport
+import io.github.mojira.risa.domain.RedditPost
+import io.github.mojira.risa.domain.Snapshot
+import io.github.mojira.risa.domain.Ticket
+import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
-import io.github.mojira.risa.infrastructure.config.Risa
 import io.github.mojira.risa.infrastructure.editPost
 import io.github.mojira.risa.infrastructure.getCurrentSnapshot
 import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
 import io.github.mojira.risa.infrastructure.getTicketsForSnapshot
 import io.github.mojira.risa.infrastructure.loginToJira
 import io.github.mojira.risa.infrastructure.loginToReddit
-import io.github.mojira.risa.infrastructure.previousSnapshotsPosts
+import io.github.mojira.risa.infrastructure.readSnapshotPosts
 import io.github.mojira.risa.infrastructure.readConfig
 import io.github.mojira.risa.infrastructure.saveSnapshotPosts
 import io.github.mojira.risa.infrastructure.setWebhookOfLogger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.system.exitProcess
 
 val log: Logger = LoggerFactory.getLogger("Risa")
 
 fun main() {
-    val mapper = jacksonObjectMapper()
+    val mapper = jacksonObjectMapper().registerModule(SnapshotModule())
     val config = readConfig()
     setWebhookOfLogger(config)
 
+    log.info("Starting r/isa")
     val redditCredentials = loginToReddit(config)
+    log.info("Logged in to Reddit")
     val jiraClient = loginToJira(config)
+    log.info("Logged in to Jira")
 
-    val previousSnapshots = previousSnapshotsPosts(mapper)
-    val currentSnapshot = getCurrentSnapshot(jiraClient)
+    val snapshotPosts: Map<Snapshot, RedditPost>
+    val currentSnapshot: Snapshot
+    val ticketsForSnapshot: List<Ticket>
+    try {
+        snapshotPosts = readSnapshotPosts(mapper)
+        log.info("Loaded ${snapshotPosts.size} previous snapshots")
+        currentSnapshot = getCurrentSnapshot(jiraClient)
+        log.info("Current snapshot: ${currentSnapshot.name}")
 
-    val ticketsForSnapshot = getTicketsForSnapshot(jiraClient, currentSnapshot)
-    val report = generateReport(ticketsForSnapshot, currentSnapshot, previousSnapshots)
+        ticketsForSnapshot = getTicketsForSnapshot(jiraClient, currentSnapshot)
+        log.info("Tickets for current snapshot: ${ticketsForSnapshot.size}")
+    } catch (e: Exception) {
+        log.error("Error getting tickets from Jira", e)
+        exitProcess(1)
+    }
 
-    val currentPost = getOrCreateCurrentPost(redditCredentials)
-    editPost(currentPost, report)
-    saveSnapshotPosts(mapper, previousSnapshots.add(currentSnapshot to currentPost))
+    val report = generateReport(ticketsForSnapshot, currentSnapshot, snapshotPosts)
+
+    val currentPost: RedditPost
+    try {
+        currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
+        editPost(redditCredentials, currentPost, report)
+        log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
+    } catch (e: Exception) {
+        log.error("Error posting to Reddit", e)
+        exitProcess(1)
+    }
+    saveSnapshotPosts(mapper, snapshotPosts.add(currentSnapshot, currentPost))
 }

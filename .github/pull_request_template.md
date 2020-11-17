@@ -6,4 +6,4 @@
 
 #### Checklist
 - [ ] Included tests
-- [ ] Tested in https://reddit.com/
+- [ ] Tested on https://reddit.com/

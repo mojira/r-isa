@@ -3,10 +3,12 @@ package io.github.mojira.risa.infrastructure
 import com.uchuhimo.konf.Config
 import io.github.mojira.risa.domain.RedditPost
 import io.github.mojira.risa.domain.Report
+import io.github.mojira.risa.domain.Snapshot
 import io.github.mojira.risa.infrastructure.config.Risa
 import net.dean.jraw.RedditClient
 import net.dean.jraw.http.OkHttpNetworkAdapter
 import net.dean.jraw.http.UserAgent
+import net.dean.jraw.models.SubmissionKind
 import net.dean.jraw.oauth.Credentials
 import net.dean.jraw.oauth.OAuthHelper
 
@@ -22,10 +24,34 @@ fun loginToReddit(config: Config): RedditClient {
     return OAuthHelper.automatic(adapter, credentials)
 }
 
-fun editPost(currentPost: RedditPost, report: Report) {
-    TODO()
+fun editPost(redditClient: RedditClient, currentPost: RedditPost, report: Report) {
+    redditClient
+        .submission(currentPost)
+        .edit(report)
 }
 
-fun getOrCreateCurrentPost(redditClient: RedditClient): RedditPost {
-    TODO()
+fun getOrCreateCurrentPost(
+    redditClient: RedditClient,
+    previousPosts: Map<Snapshot, RedditPost>,
+    currentSnapshot: Snapshot
+): RedditPost {
+    return getExistingPost(previousPosts, currentSnapshot)
+        ?: createNewPost(redditClient, currentSnapshot)
 }
+
+private fun getExistingPost(previousPosts: Map<Snapshot, RedditPost>, currentSnapshot: Snapshot): RedditPost? =
+    previousPosts
+        .entries
+        .find { it.key.name == currentSnapshot.name }
+        ?.value
+
+private fun createNewPost(redditClient: RedditClient, currentSnapshot: Snapshot): RedditPost =
+    redditClient
+        .subreddit("mojira")
+        .submit(
+            SubmissionKind.SELF,
+            "Bugtracker Report - ${currentSnapshot.name}",
+            "placeholder",
+            false
+        )
+        .id
