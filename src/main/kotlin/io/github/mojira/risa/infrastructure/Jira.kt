@@ -14,7 +14,6 @@ import net.rcarz.jiraclient.Version
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
 
 private val versionDateFormat = SimpleDateFormat("yyyy-MM-dd")
 private fun String.toVersionReleaseInstant() = versionDateFormat.parse(this).toInstant()
