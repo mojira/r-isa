@@ -49,4 +49,4 @@ private fun Ticket.toTableRow(): String {
 
 // Special Character Reference: https://github.com/mojira/r-isa/issues/34
 private fun String.escape(): String =
-    replace("""[`*_{}\[\]()#+\-.!]""".toRegex()) { "\\${it.value}" }
+    replace("""[!"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~]""".toRegex()) { "\\${it.value}" }
