@@ -21,7 +21,7 @@ fun generateReport(
     }
     append("\n")
     append("^(This table is generated automatically; it might contain issues that are invalid or not contain issues that are currently resolved)  \n")
-    append("^To ^report ^any ^problems ^with ^the ^auto ^generation, ^please ^go ^to ^our [^Discord ^server!](https://discord.gg/rpCyfKV)  \n")
+    append("^To ^report ^any ^problems ^with ^the ^auto ^generation, ^please ^go ^to ^our [^(Discord server!) ](https://discord.gg/rpCyfKV)  \n")
     append("**If you found a bug and you are not sure whether it has already been created or not, ask here!**\n")
     append("\n----\n")
     append("*History:*  \n")
@@ -41,8 +41,8 @@ private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditP
 private fun Ticket.toTableRow(): String {
     val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
     return if (strikethrough) {
-        "|[~~${id}~~](https://bugs.mojang.com/browse/${id})|~~${title}~~|${resolution}|${comment}\n"
+        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~$title~~|$resolution|$comment\n"
     } else {
-        "|[${id}](https://bugs.mojang.com/browse/${id})|${title}|${resolution}|${comment}\n"
+        "|[$id](https://bugs.mojang.com/browse/$id)|$title|$resolution|$comment\n"
     }
 }
