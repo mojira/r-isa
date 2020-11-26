@@ -38,11 +38,16 @@ private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditP
     ?.value
     ?: ""
 
+@Suppress("MaxLineLength")
 private fun Ticket.toTableRow(): String {
     val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
     return if (strikethrough) {
-        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~$title~~|$resolution|$comment\n"
+        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~${title.escape()}~~|${resolution.escape()}|${comment.escape()}\n"
     } else {
-        "|[$id](https://bugs.mojang.com/browse/$id)|$title|$resolution|$comment\n"
+        "|[$id](https://bugs.mojang.com/browse/$id)|${title.escape()}|${resolution.escape()}|${comment.escape()}\n"
     }
 }
+
+// Special Character Reference: https://github.com/mojira/r-isa/issues/34
+private fun String.escape(): String =
+    replace("""[!"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~]""".toRegex()) { "\\${it.value}" }
