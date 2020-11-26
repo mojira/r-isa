@@ -9,7 +9,9 @@ import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
 import io.github.mojira.risa.infrastructure.editPost
 import io.github.mojira.risa.infrastructure.getCurrentSnapshot
+import io.github.mojira.risa.infrastructure.getPreviousSnapshotPost
 import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
+import io.github.mojira.risa.infrastructure.getNewOrPreviousPost
 import io.github.mojira.risa.infrastructure.getTicketsForSnapshot
 import io.github.mojira.risa.infrastructure.loginToJira
 import io.github.mojira.risa.infrastructure.loginToReddit
@@ -37,12 +39,14 @@ fun main() {
 
     val snapshotPosts: Map<Snapshot, RedditPost>
     val currentSnapshot: Snapshot
+    val previousSnapshotPost: RedditPost
     val ticketsForSnapshot: List<Ticket>
     try {
         snapshotPosts = readSnapshotPosts(mapper)
         log.info("Loaded ${snapshotPosts.size} previous snapshots")
         currentSnapshot = getCurrentSnapshot(jiraClient)
         log.info("Current snapshot: ${currentSnapshot.name}")
+        previousSnapshotPost = getPreviousSnapshotPost(snapshotPosts)
 
         ticketsForSnapshot = getTicketsForSnapshot(jiraClient, currentSnapshot)
         log.info("Tickets for current snapshot: ${ticketsForSnapshot.size}")
@@ -54,8 +58,13 @@ fun main() {
     val report = generateReport(ticketsForSnapshot, currentSnapshot, snapshotPosts)
 
     val currentPost: RedditPost
+    val editedPost: RedditPost
     try {
         currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
+        editedPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
+        if (editedPost == previousSnapshotPost) {
+            editPost(redditCredentials, editedPost, "This post is no longer being maintained.")
+        }
         editPost(redditCredentials, currentPost, report)
         log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
     } catch (e: Exception) {
