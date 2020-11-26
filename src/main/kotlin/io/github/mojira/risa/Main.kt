@@ -62,7 +62,7 @@ fun main() {
     try {
         currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
         editedPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
-        if(editedPost == previousSnapshotPost){
+        if (editedPost == previousSnapshotPost) {
             editPost(redditCredentials, editedPost, "This post is no longer being maintained.")
         }
         editPost(redditCredentials, currentPost, report)
