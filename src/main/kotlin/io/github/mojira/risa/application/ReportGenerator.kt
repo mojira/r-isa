@@ -16,11 +16,9 @@ fun generateReport(
     append("\n\n----\n\n")
     append("New bugs reported since the release of ${currentSnapshot.name}:  \n\n")
     append("|Report #|Description|Status|Comment|\n|-----|-----|-----|-----|\n")
-    ticketsForSnapshot
-        .sortedBy { it.id }
-        .forEach {
-            append(it.toTableRow())
-        }
+    ticketsForSnapshot.forEach {
+        append(it.toTableRow())
+    }
     append("\n")
     append("^(This table is generated automatically; it might contain issues that are invalid or not contain issues that are currently resolved)  \n")
     append("^To ^report ^any ^problems ^with ^the ^auto ^generation, ^please ^go ^to ^our [^(Discord server!) ](https://discord.gg/rpCyfKV)  \n")
