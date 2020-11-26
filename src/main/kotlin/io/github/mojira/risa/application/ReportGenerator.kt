@@ -41,8 +41,8 @@ private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditP
 private fun Ticket.toTableRow(): String {
     val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
     return if (strikethrough) {
-        "|[~~${id}~~](https://bugs.mojang.com/browse/${id})|~~${title}~~|${resolution}|${comment}\n"
+        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~$title~~|$resolution|$comment\n"
     } else {
-        "|[${id}](https://bugs.mojang.com/browse/${id})|${title}|${resolution}|${comment}\n"
+        "|[$id](https://bugs.mojang.com/browse/$id)|$title|$resolution|$comment\n"
     }
 }
