@@ -38,6 +38,7 @@ private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditP
     ?.value
     ?: ""
 
+@Suppress("MaxLineLength")
 private fun Ticket.toTableRow(): String {
     val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
     return if (strikethrough) {
