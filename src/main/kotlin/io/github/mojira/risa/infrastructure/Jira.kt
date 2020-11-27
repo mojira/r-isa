@@ -52,7 +52,7 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, currentSnapshot: Snapshot): Li
 
 @SuppressWarnings("MaxLineLength")
 private fun getJql(currentSnapshot: Snapshot): String =
-    "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND created > ${currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli()} AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\"))"
+    "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND created > ${currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli()} AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\")) ORDER BY key ASC"
 
 private fun searchTickets(
     jiraClient: JiraClient,
