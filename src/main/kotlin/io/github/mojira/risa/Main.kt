@@ -75,6 +75,6 @@ fun main() {
         }
         saveSnapshotPosts(mapper, snapshotPosts.add(currentSnapshot, currentPost))
 
-        TimeUnit.HOURS.sleep(1);
+        TimeUnit.HOURS.sleep(1)
     }
 }
