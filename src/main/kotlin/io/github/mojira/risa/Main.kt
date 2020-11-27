@@ -1,7 +1,5 @@
 package io.github.mojira.risa
 
-import arrow.fx.extensions.io.concurrent.sleep
-import arrow.fx.typeclasses.Duration
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.mojira.risa.application.generateReport
 import io.github.mojira.risa.domain.RedditPost
@@ -11,14 +9,14 @@ import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
 import io.github.mojira.risa.infrastructure.editPost
 import io.github.mojira.risa.infrastructure.getCurrentSnapshot
-import io.github.mojira.risa.infrastructure.getPreviousSnapshotPost
-import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
 import io.github.mojira.risa.infrastructure.getNewOrPreviousPost
+import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
+import io.github.mojira.risa.infrastructure.getPreviousSnapshotPost
 import io.github.mojira.risa.infrastructure.getTicketsForSnapshot
 import io.github.mojira.risa.infrastructure.loginToJira
 import io.github.mojira.risa.infrastructure.loginToReddit
-import io.github.mojira.risa.infrastructure.readSnapshotPosts
 import io.github.mojira.risa.infrastructure.readConfig
+import io.github.mojira.risa.infrastructure.readSnapshotPosts
 import io.github.mojira.risa.infrastructure.saveSnapshotPosts
 import io.github.mojira.risa.infrastructure.setWebhookOfLogger
 import org.slf4j.Logger
@@ -40,7 +38,7 @@ fun main() {
     val jiraClient = loginToJira(config)
     log.info("Logged in to Jira")
 
-    while(true) {
+    while (true) {
         val snapshotPosts: Map<Snapshot, RedditPost>
         val currentSnapshot: Snapshot
         val previousSnapshotPost: RedditPost
