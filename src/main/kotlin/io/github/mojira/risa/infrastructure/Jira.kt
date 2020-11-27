@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package io.github.mojira.risa.infrastructure
 
 import com.uchuhimo.konf.Config
@@ -55,6 +57,7 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, config: Config, currentSnapsho
 private fun getJql(currentSnapshot: Snapshot): String =
     "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND created > ${currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli()} AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\")) ORDER BY \"Confirmation Status\" ASC, key ASC"
 
+@SuppressWarnings("LongParameterList")
 private fun searchTickets(
     jiraClient: JiraClient,
     config: Config,
