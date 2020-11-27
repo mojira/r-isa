@@ -50,7 +50,7 @@ fun main() {
             log.info("Current snapshot: ${currentSnapshot.name}")
             previousSnapshotPost = getPreviousSnapshotPost(snapshotPosts)
 
-            ticketsForSnapshot = getTicketsForSnapshot(jiraClient, currentSnapshot)
+            ticketsForSnapshot = getTicketsForSnapshot(jiraClient, config, currentSnapshot)
             log.info("Tickets for current snapshot: ${ticketsForSnapshot.size}")
         } catch (e: Exception) {
             log.error("Error getting tickets from Jira", e)

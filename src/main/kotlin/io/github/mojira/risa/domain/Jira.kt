@@ -3,6 +3,7 @@ package io.github.mojira.risa.domain
 typealias TicketId = String
 typealias TicketTitle = String
 typealias TicketResolution = String
+typealias TicketConfirmationStatus = String
 typealias TicketComment = String
 
 data class Ticket(
@@ -17,5 +18,6 @@ data class Ticket(
      * - `Works As Intended`
      */
     val resolution: TicketResolution,
+    val confirmationStatus: TicketConfirmationStatus,
     val comment: TicketComment
 )

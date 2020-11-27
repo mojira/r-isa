@@ -15,7 +15,7 @@ fun generateReport(
     append(" ~ [Last Report](https://www.reddit.com/r/Mojira/comments/${snapshotPosts.getPreviousOf(currentSnapshot)})")
     append("\n\n----\n\n")
     append("New bugs reported since the release of ${currentSnapshot.name}:  \n\n")
-    append("|Report #|Description|Status|Comment|\n|-----|-----|-----|-----|\n")
+    append("|Report #|Description|Confirmation|Status|Comment|\n|-----|-----|-----|-----|-----|\n")
     ticketsForSnapshot.forEach {
         append(it.toTableRow())
     }
@@ -41,10 +41,11 @@ private fun Map<Snapshot, RedditPost>.getPreviousOf(snapshot: Snapshot): RedditP
 @Suppress("MaxLineLength")
 private fun Ticket.toTableRow(): String {
     val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
+    // |Report #|Description|Confirmation|Status|Comment|
     return if (strikethrough) {
-        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~${title.escape()}~~|${resolution.escape()}|${comment.escape()}\n"
+        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~${title.escape()}~~|$confirmationStatus|$resolution|${comment.escape()}\n"
     } else {
-        "|[$id](https://bugs.mojang.com/browse/$id)|${title.escape()}|${resolution.escape()}|${comment.escape()}\n"
+        "|[$id](https://bugs.mojang.com/browse/$id)|${title.escape()}|$confirmationStatus|$resolution|${comment.escape()}\n"
     }
 }
 

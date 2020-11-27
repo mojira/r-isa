@@ -1,1 +1,3 @@
 risa:
+  jira:
+    confirmationStatusField: "customfield_10500"

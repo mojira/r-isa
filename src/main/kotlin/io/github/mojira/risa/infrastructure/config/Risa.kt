@@ -28,4 +28,8 @@ object Risa : ConfigSpec() {
             )
         }
     }
+
+    object Jira : ConfigSpec() {
+        val confirmationStatusField by required<String>()
+    }
 }
