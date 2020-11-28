@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package io.github.mojira.risa.infrastructure
 
 import com.uchuhimo.konf.Config
@@ -11,6 +13,7 @@ import net.rcarz.jiraclient.Resolution
 import net.rcarz.jiraclient.Status
 import net.rcarz.jiraclient.TokenCredentials
 import net.rcarz.jiraclient.Version
+import net.sf.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -32,7 +35,7 @@ fun getCurrentSnapshot(jiraClient: JiraClient): Snapshot = jiraClient
     .map { Snapshot(it.name, it.releaseDate.toVersionReleaseInstant()) }
     .maxByOrNull { it.releasedDate.toEpochMilli() }!!
 
-fun getTicketsForSnapshot(jiraClient: JiraClient, currentSnapshot: Snapshot): List<Ticket> {
+fun getTicketsForSnapshot(jiraClient: JiraClient, config: Config, currentSnapshot: Snapshot): List<Ticket> {
     val result = emptyList<Ticket>().toMutableList()
     val jql = getJql(currentSnapshot)
 
@@ -41,7 +44,7 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, currentSnapshot: Snapshot): Li
     do {
         wasPaginated = false
         result.addAll(
-            searchTickets(jiraClient, currentSnapshot, jql, startAt) { wasPaginated = true }
+            searchTickets(jiraClient, config, currentSnapshot, jql, startAt) { wasPaginated = true }
         )
 
         startAt += MAX_RESULT
@@ -52,10 +55,12 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, currentSnapshot: Snapshot): Li
 
 @SuppressWarnings("MaxLineLength")
 private fun getJql(currentSnapshot: Snapshot): String =
-    "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND created > ${currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli()} AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\")) ORDER BY key ASC"
+    "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND created > ${currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli()} AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\")) ORDER BY \"Confirmation Status\" ASC, key ASC"
 
+@SuppressWarnings("LongParameterList")
 private fun searchTickets(
     jiraClient: JiraClient,
+    config: Config,
     currentSnapshot: Snapshot,
     jql: String,
     startAt: Int,
@@ -76,8 +81,14 @@ private fun searchTickets(
     return queryResult
         .issues
         .filter { !it.versions.containsAnOlderVersionThanCurrent(currentSnapshot.releasedDate) }
-        .map { Ticket(it.key, it.summary, it.parseResolution(), "") }
+        .map { Ticket(it.key, it.summary, it.parseResolution(), it.getConfirmationStatus(config), "") }
 }
+
+fun Issue.getCustomField(customField: String): String? =
+    ((getField(customField)) as? JSONObject)?.get("value") as? String?
+
+fun Issue.getConfirmationStatus(config: Config): String =
+    getCustomField(config[Risa.Jira.confirmationStatusField]) ?: "Unconfirmed"
 
 fun Issue.parseResolution(): TicketResolution = if (isUnresolved(resolution) || isOpen(status)) {
     "Open"
