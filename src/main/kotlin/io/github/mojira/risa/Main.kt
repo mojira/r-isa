@@ -33,12 +33,12 @@ fun main() {
     setWebhookOfLogger(config)
 
     log.info("Starting r/isa")
-    val redditCredentials = loginToReddit(config)
-    log.info("Logged in to Reddit")
-    val jiraClient = loginToJira(config)
-    log.info("Logged in to Jira")
-
     while (true) {
+        val redditCredentials = loginToReddit(config)
+        log.info("Logged in to Reddit")
+        val jiraClient = loginToJira(config)
+        log.info("Logged in to Jira")
+
         val snapshotPosts: Map<Snapshot, RedditPost>
         val currentSnapshot: Snapshot
         val previousSnapshotPost: RedditPost
