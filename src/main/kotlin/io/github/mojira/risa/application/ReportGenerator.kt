@@ -43,7 +43,7 @@ private fun Ticket.toTableRow(): String {
     val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
     // |Report #|Description|Confirmation|Status|Comment|
     return if (strikethrough) {
-        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~${title.escape()}~~|$confirmationStatus|$resolution|${comment.escape()}\n"
+        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~${title.trim().escape()}~~|$confirmationStatus|${resolution.escape()}|${comment.escape()}\n"
     } else {
         "|[$id](https://bugs.mojang.com/browse/$id)|${title.escape()}|$confirmationStatus|$resolution|${comment.escape()}\n"
     }
@@ -51,4 +51,4 @@ private fun Ticket.toTableRow(): String {
 
 // Special Character Reference: https://github.com/mojira/r-isa/issues/34
 private fun String.escape(): String =
-    replace("""[!"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~]""".toRegex()) { "\\${it.value}" }
+    replace("""[!#&()*+./:<>\[\\\]^_`{|}~]""".toRegex()) { "\\${it.value}" }
