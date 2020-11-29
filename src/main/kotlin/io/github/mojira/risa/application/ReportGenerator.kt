@@ -26,6 +26,7 @@ fun generateReport(
     append("\n----\n")
     append("*History:*  \n")
     append(snapshotPosts
+        .filter { it.key.name != currentSnapshot.name }
         .toSortedMap(Comparator.comparing { it.releasedDate })
         .map { "[${it.key.name}](https://www.reddit.com/r/Mojira/comments/${it.value})" }
         .joinToString(" ~ "))
