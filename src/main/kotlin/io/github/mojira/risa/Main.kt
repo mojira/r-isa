@@ -7,6 +7,7 @@ import io.github.mojira.risa.domain.Snapshot
 import io.github.mojira.risa.domain.Ticket
 import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
+import io.github.mojira.risa.infrastructure.addReply
 import io.github.mojira.risa.infrastructure.editPost
 import io.github.mojira.risa.infrastructure.getCurrentSnapshot
 import io.github.mojira.risa.infrastructure.getNewOrPreviousPost
