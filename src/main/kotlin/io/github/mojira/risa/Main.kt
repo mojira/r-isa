@@ -66,7 +66,7 @@ fun main() {
             currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
             oldPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
             if (oldPost == previousSnapshotPost) {
-                addReply(redditCredentials, oldPost, "This post is no longer being maintained.")
+                addReply(redditCredentials, oldPost, "This post is no longer being maintained. ")
             }
             editPost(redditCredentials, currentPost, report)
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
