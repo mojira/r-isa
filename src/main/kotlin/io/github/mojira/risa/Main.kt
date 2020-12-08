@@ -63,9 +63,9 @@ fun main() {
         val editedPost: RedditPost
         try {
             currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
-            editedPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
-            if (editedPost == previousSnapshotPost) {
-                editPost(redditCredentials, editedPost, "This post is no longer being maintained.")
+            oldPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
+            if (oldPost == previousSnapshotPost) {
+                addReply(redditCredentials, oldPost, "This post is no longer being maintained.")
             }
             editPost(redditCredentials, currentPost, report)
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
