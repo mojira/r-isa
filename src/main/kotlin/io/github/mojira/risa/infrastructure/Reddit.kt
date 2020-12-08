@@ -30,9 +30,10 @@ fun editPost(redditClient: RedditClient, currentPost: RedditPost, report: Report
         .edit(report)
 }
 
-fun addReply(redditClient: RedditClient, currentPost: RedditPost, content: string) {
+fun addReply(redditClient: RedditClient, currentPost: RedditPost, content: Report) {
     redditClient
-        .reply(currentPost, content)
+        .submission(currentPost)
+        .reply(content)
 }
 
 fun getOrCreateCurrentPost(
