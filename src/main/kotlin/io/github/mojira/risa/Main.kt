@@ -61,7 +61,7 @@ fun main() {
         val report = generateReport(ticketsForSnapshot, currentSnapshot, snapshotPosts)
 
         val currentPost: RedditPost
-        val editedPost: RedditPost
+        val oldPost: RedditPost
         try {
             currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
             oldPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
