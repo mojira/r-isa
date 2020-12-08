@@ -7,6 +7,7 @@ import io.github.mojira.risa.domain.Snapshot
 import io.github.mojira.risa.domain.Ticket
 import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
+import io.github.mojira.risa.infrastructure.addReply
 import io.github.mojira.risa.infrastructure.editPost
 import io.github.mojira.risa.infrastructure.getCurrentSnapshot
 import io.github.mojira.risa.infrastructure.getNewOrPreviousPost
@@ -60,12 +61,12 @@ fun main() {
         val report = generateReport(ticketsForSnapshot, currentSnapshot, snapshotPosts)
 
         val currentPost: RedditPost
-        val editedPost: RedditPost
+        val oldPost: RedditPost
         try {
             currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
-            editedPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
-            if (editedPost == previousSnapshotPost) {
-                editPost(redditCredentials, editedPost, "This post is no longer being maintained.")
+            oldPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
+            if (oldPost == previousSnapshotPost) {
+                addReply(redditCredentials, oldPost, "This post is no longer being maintained.")
             }
             editPost(redditCredentials, currentPost, report)
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
