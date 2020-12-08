@@ -30,6 +30,11 @@ fun editPost(redditClient: RedditClient, currentPost: RedditPost, report: Report
         .edit(report)
 }
 
+fun addReply(redditClient: RedditClient, currentPost: RedditPost, content: string) {
+    redditClient
+        .reply(currentPost, content)
+}
+
 fun getOrCreateCurrentPost(
     redditClient: RedditClient,
     previousPosts: Map<Snapshot, RedditPost>,
