@@ -45,15 +45,6 @@ fun getOrCreateCurrentPost(
         ?: createNewPost(redditClient, currentSnapshot)
 }
 
-fun getNewOrPreviousPost(
-    previousPosts: Map<Snapshot, RedditPost>,
-    previousSnapshotPost: RedditPost,
-    currentSnapshot: Snapshot
-): RedditPost {
-    return getExistingPost(previousPosts, currentSnapshot)
-        ?: previousSnapshotPost
-}
-
 private fun getExistingPost(previousPosts: Map<Snapshot, RedditPost>, currentSnapshot: Snapshot): RedditPost? =
     previousPosts
         .entries
