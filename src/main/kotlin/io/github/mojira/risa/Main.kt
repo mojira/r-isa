@@ -10,9 +10,8 @@ import io.github.mojira.risa.infrastructure.add
 import io.github.mojira.risa.infrastructure.addReply
 import io.github.mojira.risa.infrastructure.editPost
 import io.github.mojira.risa.infrastructure.getCurrentSnapshot
-import io.github.mojira.risa.infrastructure.getNewOrPreviousPost
 import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
-import io.github.mojira.risa.infrastructure.getPreviousSnapshotPost
+import io.github.mojira.risa.infrastructure.getPreviousSnapshot
 import io.github.mojira.risa.infrastructure.getTicketsForSnapshot
 import io.github.mojira.risa.infrastructure.loginToJira
 import io.github.mojira.risa.infrastructure.loginToReddit
@@ -42,14 +41,14 @@ fun main() {
 
         val snapshotPosts: Map<Snapshot, RedditPost>
         val currentSnapshot: Snapshot
-        val previousSnapshotPost: RedditPost
+        val previousSnapshot: Snapshot
         val ticketsForSnapshot: List<Ticket>
         try {
             snapshotPosts = readSnapshotPosts(mapper)
             log.info("Loaded ${snapshotPosts.size} previous snapshots")
             currentSnapshot = getCurrentSnapshot(jiraClient)
             log.info("Current snapshot: ${currentSnapshot.name}")
-            previousSnapshotPost = getPreviousSnapshotPost(snapshotPosts)
+            previousSnapshot = getPreviousSnapshot(snapshotPosts)
 
             ticketsForSnapshot = getTicketsForSnapshot(jiraClient, config, currentSnapshot)
             log.info("Tickets for current snapshot: ${ticketsForSnapshot.size}")
@@ -61,12 +60,10 @@ fun main() {
         val report = generateReport(ticketsForSnapshot, currentSnapshot, snapshotPosts)
 
         val currentPost: RedditPost
-        val oldPost: RedditPost
         try {
             currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
-            oldPost = getNewOrPreviousPost(snapshotPosts, previousSnapshotPost, currentSnapshot)
-            if (oldPost == previousSnapshotPost) {
-                addReply(redditCredentials, oldPost, "This post is no longer being maintained.")
+            if (currentSnapshot != previousSnapshot) {
+                addReply(redditCredentials, getOrCreateCurrentPost(redditCredentials, snapshotPosts, previousSnapshot), "This post is no longer being maintained.")
             }
             editPost(redditCredentials, currentPost, report)
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
