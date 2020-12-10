@@ -1,7 +1,7 @@
 <!-- shields -->
 [![](https://img.shields.io/github/issues/mojira/r-isa)](https://github.com/mojira/r-isa/issues)
 [![](https://img.shields.io/github/stars/mojira/r-isa)](https://github.com/mojira/r-isa/stargazers)
-[![](https://img.shields.io/github/license/mojira/r-isa)](https://github.com/mojira/r-isa/blob/master/LICENSE)
+[![](https://img.shields.io/github/license/mojira/r-isa)](https://github.com/mojira/r-isa/blob/master/LICENSE.md)
 
 # r/isa
 
