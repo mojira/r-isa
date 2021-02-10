@@ -9,7 +9,7 @@
 <br/>
 <p align="center">
   <a href="https://bugs.mojang.com/">
-    <img src="risa.png" alt="r/isa" width="80" height="80">
+    <img src="mojira-logo.png" alt="Mojira logo" width="80" height="80">
   </a>
 
   <h3 align="center">r/isa</h3>
