@@ -22,11 +22,10 @@ import io.github.mojira.risa.infrastructure.setWebhookOfLogger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 
 val log: Logger = LoggerFactory.getLogger("Risa")
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "LongMethod", "LoopWithTooManyJumpStatements")
 fun main() {
     val mapper = jacksonObjectMapper().registerModule(SnapshotModule())
     val config = readConfig()
@@ -34,9 +33,21 @@ fun main() {
 
     log.info("Starting r/isa")
     while (true) {
-        val redditCredentials = loginToReddit(config)
+        val redditCredentials = try {
+            loginToReddit(config)
+        } catch (e: Exception) {
+            log.error("Error logging in to Reddit", e)
+            TimeUnit.MINUTES.sleep(1)
+            continue
+        }
         log.info("Logged in to Reddit")
-        val jiraClient = loginToJira(config)
+        val jiraClient = try {
+            loginToJira(config)
+        } catch (e: Exception) {
+            log.error("Error logging in to Jira", e)
+            TimeUnit.MINUTES.sleep(1)
+            continue
+        }
         log.info("Logged in to Jira")
 
         val snapshotPosts: Map<Snapshot, RedditPost>
@@ -54,7 +65,8 @@ fun main() {
             log.info("Tickets for current snapshot: ${ticketsForSnapshot.size}")
         } catch (e: Exception) {
             log.error("Error getting tickets from Jira", e)
-            exitProcess(1)
+            TimeUnit.MINUTES.sleep(1)
+            continue
         }
 
         val report = generateReport(ticketsForSnapshot, currentSnapshot, snapshotPosts)
@@ -63,15 +75,18 @@ fun main() {
         try {
             currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
             if (currentSnapshot != previousSnapshot) {
-                addReply(redditCredentials,
-                        getOrCreateCurrentPost(redditCredentials, snapshotPosts, previousSnapshot),
-                        "This post is no longer being maintained.")
+                addReply(
+                    redditCredentials,
+                    getOrCreateCurrentPost(redditCredentials, snapshotPosts, previousSnapshot),
+                    "This post is no longer being maintained."
+                )
             }
             editPost(redditCredentials, currentPost, report)
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
         } catch (e: Exception) {
             log.error("Error posting to Reddit", e)
-            exitProcess(1)
+            TimeUnit.MINUTES.sleep(1)
+            continue
         }
         saveSnapshotPosts(mapper, snapshotPosts.add(currentSnapshot, currentPost))
 
