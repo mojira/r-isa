@@ -26,7 +26,7 @@ import kotlin.system.exitProcess
 
 val log: Logger = LoggerFactory.getLogger("Risa")
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "LongMethod", "LoopWithTooManyJumpStatements")
 fun main() {
     val mapper = jacksonObjectMapper().registerModule(SnapshotModule())
     val config = readConfig()
