@@ -34,9 +34,21 @@ fun main() {
 
     log.info("Starting r/isa")
     while (true) {
-        val redditCredentials = loginToReddit(config)
+        val redditCredentials = try {
+            loginToReddit(config)
+        } catch (e: Exception) {
+            log.error("Error logging to Reddit", e)
+            TimeUnit.MINUTES.sleep(1)
+            continue
+        }
         log.info("Logged in to Reddit")
-        val jiraClient = loginToJira(config)
+        val jiraClient = try {
+            loginToJira(config)
+        } catch (e: Exception) {
+            log.error("Error logging to Jira", e)
+            TimeUnit.MINUTES.sleep(1)
+            continue
+        }
         log.info("Logged in to Jira")
 
         val snapshotPosts: Map<Snapshot, RedditPost>
@@ -54,7 +66,8 @@ fun main() {
             log.info("Tickets for current snapshot: ${ticketsForSnapshot.size}")
         } catch (e: Exception) {
             log.error("Error getting tickets from Jira", e)
-            exitProcess(1)
+            TimeUnit.MINUTES.sleep(1)
+            continue
         }
 
         val report = generateReport(ticketsForSnapshot, currentSnapshot, snapshotPosts)
@@ -71,7 +84,8 @@ fun main() {
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
         } catch (e: Exception) {
             log.error("Error posting to Reddit", e)
-            exitProcess(1)
+            TimeUnit.MINUTES.sleep(1)
+            continue
         }
         saveSnapshotPosts(mapper, snapshotPosts.add(currentSnapshot, currentPost))
 
