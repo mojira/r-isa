@@ -22,7 +22,6 @@ import io.github.mojira.risa.infrastructure.setWebhookOfLogger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 
 val log: Logger = LoggerFactory.getLogger("Risa")
 
@@ -76,9 +75,11 @@ fun main() {
         try {
             currentPost = getOrCreateCurrentPost(redditCredentials, snapshotPosts, currentSnapshot)
             if (currentSnapshot != previousSnapshot) {
-                addReply(redditCredentials,
-                        getOrCreateCurrentPost(redditCredentials, snapshotPosts, previousSnapshot),
-                        "This post is no longer being maintained.")
+                addReply(
+                    redditCredentials,
+                    getOrCreateCurrentPost(redditCredentials, snapshotPosts, previousSnapshot),
+                    "This post is no longer being maintained."
+                )
             }
             editPost(redditCredentials, currentPost, report)
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
