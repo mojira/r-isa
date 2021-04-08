@@ -44,7 +44,7 @@ fun main() {
         val jiraClient = try {
             loginToJira(config)
         } catch (e: Exception) {
-            log.error("Error logging to Jira", e)
+            log.error("Error logging in to Jira", e)
             TimeUnit.MINUTES.sleep(1)
             continue
         }
