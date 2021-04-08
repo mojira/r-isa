@@ -36,7 +36,7 @@ fun main() {
         val redditCredentials = try {
             loginToReddit(config)
         } catch (e: Exception) {
-            log.error("Error logging to Reddit", e)
+            log.error("Error logging in to Reddit", e)
             TimeUnit.MINUTES.sleep(1)
             continue
         }
