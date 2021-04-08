@@ -14,7 +14,7 @@ fun generateReport(
 ): Report = buildString {
     append("[Mojang's Release Post](https://www.minecraft.net/en-us/article/minecraft-snapshot-${currentSnapshot.name})")
     append(" ~ [Last Report](https://www.reddit.com/r/Mojira/comments/${snapshotPosts.getPreviousOf(currentSnapshot)})")
-    append(" Last updated: ${Instant.now()}")
+    append(" ~ Last updated: ${Instant.now()}")
     append("\n\n----\n\n")
     append("New bugs reported since the release of ${currentSnapshot.name}:  \n\n")
     append("|Report #|Description|Confirmation|Status|Comment|\n|-----|-----|-----|-----|-----|\n")
