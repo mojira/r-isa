@@ -22,6 +22,7 @@ private val versionDateFormat = SimpleDateFormat("yyyy-MM-dd")
 private fun String.toVersionReleaseInstant() = versionDateFormat.parse(this).toInstant()
 
 private const val MAX_RESULT = 50
+private const val MAX_TABLE_ENTRIES = 200
 
 fun loginToJira(config: Config) = JiraClient(
     config[Risa.Credentials.Jira.url],
@@ -46,9 +47,9 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, config: Config, currentSnapsho
 
     val tickets = searchTicketsPaginated(jiraClient, config, currentSnapshot, jql)
 
-    if (tickets.size > 200) {
+    if (tickets.size > MAX_TABLE_ENTRIES) {
         return JiraQueryResult(
-            tickets.filterNot { it.confirmationStatus == "Unconfirmed" },
+            tickets.filterNot { it.confirmationStatus == "Unconfirmed" }.subList(0, MAX_TABLE_ENTRIES),
         true,
             jql
         )
@@ -65,7 +66,12 @@ private fun getJql(currentSnapshot: Snapshot): String =
             "AND ((resolution != \"Awaiting Response\" OR resolution is EMPTY) OR (resolution = \"Awaiting Response\" AND updated > -24h)) " +
             "ORDER BY \"Confirmation Status\" DESC, key ASC"
 
-private fun searchTicketsPaginated(jiraClient: JiraClient, config: Config, currentSnapshot: Snapshot, jql: String): List<Ticket> {
+private fun searchTicketsPaginated(
+    jiraClient: JiraClient,
+    config: Config,
+    currentSnapshot: Snapshot,
+    jql: String
+): List<Ticket> {
     val result = mutableListOf<Ticket>()
 
     var startAt = 0
