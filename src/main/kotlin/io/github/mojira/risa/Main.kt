@@ -25,6 +25,11 @@ import java.util.concurrent.TimeUnit
 
 val log: Logger = LoggerFactory.getLogger("Risa")
 
+private const val REDDIT_RECONNECT_INTERVAL_MINUTES = 2L
+private const val JIRA_RECONNECT_INTERVAL_MINUTES = 1L
+
+private const val REDDIT_POST_UPDATE_INTERVAL_MINUTES = 15L
+
 @Suppress("TooGenericExceptionCaught", "LongMethod", "LoopWithTooManyJumpStatements")
 fun main() {
     val mapper = jacksonObjectMapper().registerModule(SnapshotModule())
@@ -37,7 +42,7 @@ fun main() {
             loginToReddit(config)
         } catch (e: Exception) {
             log.error("Error logging in to Reddit", e)
-            TimeUnit.MINUTES.sleep(1)
+            TimeUnit.MINUTES.sleep(REDDIT_RECONNECT_INTERVAL_MINUTES)
             continue
         }
         log.info("Logged in to Reddit")
@@ -45,7 +50,7 @@ fun main() {
             loginToJira(config)
         } catch (e: Exception) {
             log.error("Error logging in to Jira", e)
-            TimeUnit.MINUTES.sleep(1)
+            TimeUnit.MINUTES.sleep(JIRA_RECONNECT_INTERVAL_MINUTES)
             continue
         }
         log.info("Logged in to Jira")
@@ -65,7 +70,7 @@ fun main() {
             log.info("Tickets for current snapshot: ${ticketsForSnapshot.tickets.size}")
         } catch (e: Exception) {
             log.error("Error getting tickets from Jira", e)
-            TimeUnit.MINUTES.sleep(1)
+            TimeUnit.MINUTES.sleep(JIRA_RECONNECT_INTERVAL_MINUTES)
             continue
         }
 
@@ -85,11 +90,11 @@ fun main() {
             log.info("Posted to reddit: https://www.reddit.com/r/Mojira/comments/$currentPost")
         } catch (e: Exception) {
             log.error("Error posting to Reddit", e)
-            TimeUnit.MINUTES.sleep(1)
+            TimeUnit.MINUTES.sleep(REDDIT_RECONNECT_INTERVAL_MINUTES)
             continue
         }
         saveSnapshotPosts(mapper, snapshotPosts.add(currentSnapshot, currentPost))
 
-        TimeUnit.HOURS.sleep(1)
+        TimeUnit.MINUTES.sleep(REDDIT_POST_UPDATE_INTERVAL_MINUTES)
     }
 }
