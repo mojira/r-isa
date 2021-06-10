@@ -29,7 +29,7 @@ fun generateReport(
 
         append("\n")
         append("The table has been truncated; unconfirmed bug reports have been removed. " +
-                "[Click here to view all bugs known to happen in this version (including old bugs from previous versions).](https://bugs.mojang.com/issues/?jql=${ jqlUrl.toASCIIString() })\n")
+                "[Click here to view all bugs that have been reported since this version was released.](https://bugs.mojang.com/issues/?jql=${ jqlUrl.toASCIIString() })\n")
     }
 
     append("\n")
