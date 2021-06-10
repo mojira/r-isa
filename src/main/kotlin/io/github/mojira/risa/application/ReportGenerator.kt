@@ -4,11 +4,13 @@ import io.github.mojira.risa.domain.RedditPost
 import io.github.mojira.risa.domain.Report
 import io.github.mojira.risa.domain.Snapshot
 import io.github.mojira.risa.domain.Ticket
+import io.github.mojira.risa.infrastructure.JiraQueryResult
+import java.net.URI
 import java.time.Instant
 
 @SuppressWarnings("MaxLineLength")
 fun generateReport(
-    ticketsForSnapshot: List<Ticket>,
+    ticketsForSnapshot: JiraQueryResult,
     currentSnapshot: Snapshot,
     snapshotPosts: Map<Snapshot, RedditPost>
 ): Report = buildString {
@@ -18,9 +20,18 @@ fun generateReport(
     append("\n\n----\n\n")
     append("New bugs reported since the release of ${currentSnapshot.name}:  \n\n")
     append("|Report #|Description|Confirmation|Status|Comment|\n|-----|-----|-----|-----|-----|\n")
-    ticketsForSnapshot.forEach {
+    ticketsForSnapshot.tickets.forEach {
         append(it.toTableRow())
     }
+
+    if (ticketsForSnapshot.truncated) {
+        val jqlUrl = URI("http", "bugs.mojang.com", "/issues/", "jql=${ ticketsForSnapshot.fullSearch }")
+
+        append("\n")
+        append("The table has been truncated; unconfirmed bug reports have been removed. " +
+                "[Click here to view all bugs that have been reported since this version was released.](https://bugs.mojang.com/issues/?jql=${ jqlUrl.toASCIIString() })\n")
+    }
+
     append("\n")
     append("^(This table is generated automatically; it might contain issues that are invalid or not contain issues that are currently resolved)  \n")
     append("^To ^report ^any ^problems ^with ^the ^auto ^generation, ^please ^go ^to ^our [^(Discord server!) ](https://discord.gg/rpCyfKV)  \n")

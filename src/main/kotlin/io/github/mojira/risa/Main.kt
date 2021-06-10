@@ -4,7 +4,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.mojira.risa.application.generateReport
 import io.github.mojira.risa.domain.RedditPost
 import io.github.mojira.risa.domain.Snapshot
-import io.github.mojira.risa.domain.Ticket
 import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
 import io.github.mojira.risa.infrastructure.addReply
@@ -13,6 +12,7 @@ import io.github.mojira.risa.infrastructure.getCurrentSnapshot
 import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
 import io.github.mojira.risa.infrastructure.getPreviousSnapshot
 import io.github.mojira.risa.infrastructure.getTicketsForSnapshot
+import io.github.mojira.risa.infrastructure.JiraQueryResult
 import io.github.mojira.risa.infrastructure.loginToJira
 import io.github.mojira.risa.infrastructure.loginToReddit
 import io.github.mojira.risa.infrastructure.readConfig
@@ -53,7 +53,7 @@ fun main() {
         val snapshotPosts: Map<Snapshot, RedditPost>
         val currentSnapshot: Snapshot
         val previousSnapshot: Snapshot
-        val ticketsForSnapshot: List<Ticket>
+        val ticketsForSnapshot: JiraQueryResult
         try {
             snapshotPosts = readSnapshotPosts(mapper)
             log.info("Loaded ${snapshotPosts.size} previous snapshots")
@@ -62,7 +62,7 @@ fun main() {
             previousSnapshot = getPreviousSnapshot(snapshotPosts)
 
             ticketsForSnapshot = getTicketsForSnapshot(jiraClient, config, currentSnapshot)
-            log.info("Tickets for current snapshot: ${ticketsForSnapshot.size}")
+            log.info("Tickets for current snapshot: ${ticketsForSnapshot.tickets.size}")
         } catch (e: Exception) {
             log.error("Error getting tickets from Jira", e)
             TimeUnit.MINUTES.sleep(1)
