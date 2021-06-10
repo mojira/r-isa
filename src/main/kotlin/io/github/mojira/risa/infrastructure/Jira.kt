@@ -35,9 +35,38 @@ fun getCurrentSnapshot(jiraClient: JiraClient): Snapshot = jiraClient
     .map { Snapshot(it.name, it.releaseDate.toVersionReleaseInstant()) }
     .maxByOrNull { it.releasedDate.toEpochMilli() }!!
 
-fun getTicketsForSnapshot(jiraClient: JiraClient, config: Config, currentSnapshot: Snapshot): List<Ticket> {
-    val result = emptyList<Ticket>().toMutableList()
+data class JiraQueryResult(
+    val tickets: List<Ticket>,
+    val truncated: Boolean,
+    val fullSearch: String
+)
+
+fun getTicketsForSnapshot(jiraClient: JiraClient, config: Config, currentSnapshot: Snapshot): JiraQueryResult {
     val jql = getJql(currentSnapshot)
+
+    val tickets = searchTicketsPaginated(jiraClient, config, currentSnapshot, jql)
+
+    if (tickets.size > 200) {
+        return JiraQueryResult(
+            tickets.filterNot { it.confirmationStatus == "Unconfirmed" },
+        true,
+            jql
+        )
+    }
+
+    return JiraQueryResult(tickets, false, jql)
+}
+
+@SuppressWarnings("MaxLineLength")
+private fun getJql(currentSnapshot: Snapshot): String =
+    "project = MC AND affectedVersion = \"${ currentSnapshot.name }\" " +
+            "AND created > ${ currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli() } " +
+            "AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\")) " +
+            "AND ((resolution != \"Awaiting Response\" OR resolution is EMPTY) OR (resolution = \"Awaiting Response\" AND updated > -24h)) " +
+            "ORDER BY \"Confirmation Status\" DESC, key ASC"
+
+private fun searchTicketsPaginated(jiraClient: JiraClient, config: Config, currentSnapshot: Snapshot, jql: String): List<Ticket> {
+    val result = mutableListOf<Ticket>()
 
     var startAt = 0
     var wasPaginated: Boolean
@@ -52,10 +81,6 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, config: Config, currentSnapsho
 
     return result
 }
-
-@SuppressWarnings("MaxLineLength")
-private fun getJql(currentSnapshot: Snapshot): String =
-    "project = MC AND affectedVersion = \"${currentSnapshot.name}\" AND created > ${currentSnapshot.releasedDate.minus(1L, ChronoUnit.DAYS).toEpochMilli()} AND (status = Open OR status = Reopened OR resolution in (\"Works As Intended\", \"Fixed\", \"Awaiting Response\", \"Unresolved\", \"Won't Fix\")) AND ((resolution != \"Awaiting Response\" OR resolution is EMPTY ) OR (resolution = \"Awaiting Response\" AND updated > -24h)) ORDER BY \"Confirmation Status\" DESC, key ASC"
 
 @SuppressWarnings("LongParameterList")
 private fun searchTickets(
