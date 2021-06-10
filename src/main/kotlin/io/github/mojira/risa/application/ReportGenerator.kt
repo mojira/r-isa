@@ -25,11 +25,13 @@ fun generateReport(
     }
 
     if (ticketsForSnapshot.truncated) {
-        val jqlUrl = URI("http", "bugs.mojang.com", "/issues/", "jql=${ ticketsForSnapshot.fullSearch }")
+        val jqlUrl = URI("http", "bugs.mojang.com", "/issues/", "jql=${ ticketsForSnapshot.fullSearch }", null)
 
         append("\n")
         append("The table has been truncated; unconfirmed bug reports have been removed. " +
-                "[Click here to view all bugs that have been reported since this version was released.](https://bugs.mojang.com/issues/?jql=${ jqlUrl.toASCIIString() })\n")
+                "[Click here to view all bugs that have been reported since this version was released.](${
+                    jqlUrl.toASCIIString().replace("(", "\\(").replace(")", "\\)")
+                })\n")
     }
 
     append("\n")
