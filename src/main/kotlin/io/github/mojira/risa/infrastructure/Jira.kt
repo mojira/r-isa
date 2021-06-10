@@ -48,11 +48,13 @@ fun getTicketsForSnapshot(jiraClient: JiraClient, config: Config, currentSnapsho
     val tickets = searchTicketsPaginated(jiraClient, config, currentSnapshot, jql)
 
     if (tickets.size > MAX_TABLE_ENTRIES) {
-        return JiraQueryResult(
-            tickets.filterNot { it.confirmationStatus == "Unconfirmed" }.subList(0, MAX_TABLE_ENTRIES),
-        true,
-            jql
-        )
+        var ticketList = tickets.filterNot { it.confirmationStatus == "Unconfirmed" }
+
+        if (ticketList.size > MAX_TABLE_ENTRIES) {
+            ticketList = ticketList.subList(0, MAX_TABLE_ENTRIES)
+        }
+
+        return JiraQueryResult(ticketList, true, jql)
     }
 
     return JiraQueryResult(tickets, false, jql)
