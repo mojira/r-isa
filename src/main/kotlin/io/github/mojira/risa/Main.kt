@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.mojira.risa.application.generateReport
 import io.github.mojira.risa.domain.RedditPost
 import io.github.mojira.risa.domain.Snapshot
+import io.github.mojira.risa.infrastructure.JiraQueryResult
 import io.github.mojira.risa.infrastructure.SnapshotModule
 import io.github.mojira.risa.infrastructure.add
 import io.github.mojira.risa.infrastructure.addReply
@@ -12,7 +13,6 @@ import io.github.mojira.risa.infrastructure.getCurrentSnapshot
 import io.github.mojira.risa.infrastructure.getOrCreateCurrentPost
 import io.github.mojira.risa.infrastructure.getPreviousSnapshot
 import io.github.mojira.risa.infrastructure.getTicketsForSnapshot
-import io.github.mojira.risa.infrastructure.JiraQueryResult
 import io.github.mojira.risa.infrastructure.loginToJira
 import io.github.mojira.risa.infrastructure.loginToReddit
 import io.github.mojira.risa.infrastructure.readConfig
