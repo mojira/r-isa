@@ -25,13 +25,15 @@ fun generateReport(
     }
 
     if (ticketsForSnapshot.truncated) {
-        val jqlUrl = URI("http", "bugs.mojang.com", "/issues/", "jql=${ ticketsForSnapshot.fullSearch }", null)
+        val jqlUrl = URI("http", "bugs.mojang.com", "/issues/", "jql=${ticketsForSnapshot.fullSearch}", null)
 
         append("\n")
-        append("The table has been truncated; unconfirmed bug reports have been removed. " +
+        append(
+            "The table has been truncated; unconfirmed bug reports have been removed. " +
                 "[Click here to view all bugs that have been reported since this version was released.](${
-                    jqlUrl.toASCIIString().replace("(", "\\(").replace(")", "\\)")
-                })\n")
+                jqlUrl.toASCIIString().replace("(", "\\(").replace(")", "\\)")
+                })\n"
+        )
     }
 
     append("\n")
@@ -40,11 +42,13 @@ fun generateReport(
     append("**If you found a bug and you are not sure whether it has already been created or not, ask here!**\n")
     append("\n----\n")
     append("*History:*  \n")
-    append(snapshotPosts
-        .filter { it.key.name != currentSnapshot.name }
-        .toSortedMap(Comparator.comparing { it.releasedDate })
-        .map { "[${it.key.name}](https://www.reddit.com/r/Mojira/comments/${it.value})" }
-        .joinToString(" ~ "))
+    append(
+        snapshotPosts
+            .filter { it.key.name != currentSnapshot.name }
+            .toSortedMap(Comparator.comparing { it.releasedDate })
+            .map { "[${it.key.name}](https://www.reddit.com/r/Mojira/comments/${it.value})" }
+            .joinToString(" ~ ")
+    )
     append(" ~ **${currentSnapshot.name}**\n")
 }
 
@@ -59,7 +63,9 @@ private fun Ticket.toTableRow(): String {
     val strikethrough = resolution in listOf("Fixed", "Won't Fix", "Works As Intended")
     // |Report #|Description|Confirmation|Status|Comment|
     return if (strikethrough) {
-        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~${title.trim().escape()}~~|$confirmationStatus|${resolution.escape()}|${comment.escape()}\n"
+        "|[~~$id~~](https://bugs.mojang.com/browse/$id)|~~${
+        title.trim().escape()
+        }~~|$confirmationStatus|${resolution.escape()}|${comment.escape()}\n"
     } else {
         "|[$id](https://bugs.mojang.com/browse/$id)|${title.escape()}|$confirmationStatus|$resolution|${comment.escape()}\n"
     }

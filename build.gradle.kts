@@ -1,9 +1,8 @@
 plugins {
-    java
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.7.20"
+    id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
     application
-    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
-    id("io.gitlab.arturbosch.detekt") version "1.9.1"
+    id("io.gitlab.arturbosch.detekt") version "1.21.0"
 }
 
 group = "org.example"
@@ -15,53 +14,44 @@ repositories {
     maven("https://jitpack.io")
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter {
-            content {
-                // just allow to include kotlinx projects
-                // detekt needs 'kotlinx-html' for the html report
-                includeGroup("org.jetbrains.kotlinx")
-            }
-        }
-    }
-    dependencies {
-        classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.1")
-    }
-}
-
-val logBackVersion = "1.2.3"
+val logBackVersion = "1.4.3"
 val arrowVersion = "0.10.4"
 val kotestVersion = "4.2.3"
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8") as String) {
+        isForce = true
+        isChanging = true
+    }
+    implementation(kotlin("reflect") as String) {
+        isForce = true
+        isChanging = true
+    }
     implementation("io.arrow-kt", "arrow-core", arrowVersion)
     implementation("io.arrow-kt", "arrow-syntax", arrowVersion)
     implementation("io.arrow-kt", "arrow-fx", arrowVersion)
     implementation("net.dean.jraw", "JRAW", "1.1.0")
     implementation("com.uchuhimo", "konf", "0.22.1")
     implementation("com.github.rcarz", "jira-client", "master-SNAPSHOT")
-    implementation("com.github.napstr", "logback-discord-appender", "1.0.0")
-    implementation("org.slf4j", "slf4j-api", "1.7.25")
+    implementation("com.github.napstr", "logback-discord-appender", "bda874138e")
+    implementation("org.slf4j", "slf4j-api", "2.0.3")
     implementation("ch.qos.logback", "logback-classic", logBackVersion)
     implementation("ch.qos.logback", "logback-core", logBackVersion)
-    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.11.+")
+    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.13.+")
 
     testImplementation("io.kotest", "kotest-assertions-core-jvm", kotestVersion)
     testImplementation("io.kotest", "kotest-runner-junit5", kotestVersion)
     testImplementation("io.kotest", "kotest-assertions-arrow", kotestVersion)
-    testImplementation("io.mockk", "mockk", "1.9.3")
-    testImplementation("org.reflections", "reflections", "0.9.12")
+    testImplementation("io.mockk", "mockk", "1.13.2")
+    testImplementation("org.reflections", "reflections", "0.10.2")
 }
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "11"
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "11"
     }
 
     test {
@@ -94,6 +84,6 @@ detekt {
 tasks {
     withType<io.gitlab.arturbosch.detekt.Detekt> {
         // Target version of the generated JVM bytecode. It is used for type resolution.
-        this.jvmTarget = "1.8"
+        this.jvmTarget = "11"
     }
 }
