@@ -55,7 +55,7 @@ It runs with `./gradlew clean build`, but you can also run it independently usin
 
 ## Found a bug in Minecraft?
 
-Please head over to [bugs.mojang.com](https://bugs.mojang.com/), search whether your bug is already reported and if not, create an account and click the red "Create" button on the top of the page.
+Please head over to [bugs.mojang.com](https://bugs.mojang.com/), search whether your bug is already reported and if not, create an account and click the grey "Create" button on the top of the page.
 
 ## License
 
