@@ -59,15 +59,15 @@ jobs:
 
           echo Upload new libraries
           FOLDER=build/install/risa/lib
-          rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
+          sh -c "rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION"
 
           echo Upload new binaries
           FOLDER=build/install/risa/bin
-          rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
+          sh -c "rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION"
 
           echo Upload new configuration
           FOLDER=risa.yml
-          rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
+          sh -c "rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION"
 
           echo Run internal deploy script
           /usr/bin/screen -ls | /bin/egrep 'Detached|Attached' | /usr/bin/cut -d. -f1 | /usr/bin/awk '{print $1}' | /usr/bin/xargs /bin/kill
