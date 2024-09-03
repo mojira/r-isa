@@ -30,7 +30,7 @@ dependencies {
     implementation("io.arrow-kt", "arrow-core", arrowVersion)
     implementation("io.arrow-kt", "arrow-syntax", arrowVersion)
     implementation("io.arrow-kt", "arrow-fx", arrowVersion)
-    implementation("net.dean.jraw", "JRAW", "1.1.0")
+    implementation("com.github.mattbdean", "JRAW", "v1.1.0")
     implementation("com.uchuhimo", "konf", "0.22.1")
     implementation("com.github.rcarz", "jira-client", "master-SNAPSHOT")
     implementation("com.github.napstr", "logback-discord-appender", "bda874138e")
