@@ -23,19 +23,20 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - uses: eskatos/gradle-command-action@v1.3.1
+    - name: Build with Gradle
+      uses: eskatos/gradle-command-action@v1.3.1
       with:
         arguments: clean build installDist
         wrapper-cache-enabled: true
         dependencies-cache-enabled: true
         configuration-cache-enabled: true
-    - name: Azure CLI Login
+    - name: Azure Login
       uses: azure/login@v2
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    - name: Open Bastion tunnel and deploy
+    - name: Open Bastion tunnel
       uses: azure/cli@v2
       with:
         azcliversion: latest
@@ -43,11 +44,15 @@ jobs:
           az config set extension.dynamic_install_allow_preview=true
 
           echo Opening tunnel
-          az network bastion tunnel --name $BASTION_NAME --resource-group $RESOURCE_GROUP --target-resource-id $RESOURCE_ID --resource-port 22 --port 50022 --debug &
+          az network bastion tunnel --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --target-resource-id ${{ secrets.RESOURCE_ID }} --resource-port 22 --port 50022 --debug &
 
           echo Wait for bastion tunnel to open
-          az network bastion wait --created --name $BASTION_NAME --resource-group $RESOURCE_GROUP --debug
-
+          az network bastion wait --created --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --debug
+    - name: Deploy
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
           ARGS="-avh --delete"
           USERNAME=risa
           SERVER_DESTINATION=/home/risa/r-isa
