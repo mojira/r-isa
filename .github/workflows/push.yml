@@ -30,15 +30,26 @@ jobs:
         wrapper-cache-enabled: true
         dependencies-cache-enabled: true
         configuration-cache-enabled: true
-    - name: Azure Login
+    - name: Log in to Azure CLI
       uses: azure/login@v2
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    - run: |
-          python3 -m pip install --upgrade pip --user
+    - name: Open Bastion tunnel
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
           az extension add --name bastion
+
+          echo Opening tunnel
+          az network bastion tunnel --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --target-resource-id ${{ secrets.RESOURCE_ID }} --resource-port 22 --port 50022 &
+
+          echo Wait for bastion tunnel to open
+          az network bastion wait --created --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
+    - name: Upload build artifacts and run deploy script
+      run: |
           ARGS="-avh --delete"
           USERNAME=risa
           SERVER_DESTINATION=/home/risa/r-isa
@@ -47,13 +58,6 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          
-
-          echo Opening tunnel
-          az network bastion tunnel --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --target-resource-id ${{ secrets.RESOURCE_ID }} --resource-port 22 --port 50022 &
-
-          echo Wait for bastion tunnel to open
-          az network bastion wait --created --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }}
 
           echo Upload new libraries
           FOLDER=build/install/risa/lib
