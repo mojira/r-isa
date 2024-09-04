@@ -49,14 +49,18 @@ jobs:
           echo Wait for bastion tunnel to open
           az network bastion wait --created --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --debug
     - run: |
-          sudo apt -y install rsync
           ARGS="-avh --delete"
           USERNAME=risa
           SERVER_DESTINATION=/home/risa/r-isa
+          SSHPATH="$HOME/.ssh"
+          rm -rf "$SSHPATH" 
+          mkdir "$SSHPATH"
+          echo "$DEPLOY_KEY" > "$SSHPATH/key"
+          chmod 600 "$SSHPATH/key"
 
           echo Upload new libraries
           FOLDER=build/install/risa/lib
-          sh -c "rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION"
+          sh -c "rsync $ARGS  -e 'ssh -i $SSHPATH/key -o StrictHostKeyChecking=no -p 50022' $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION"
 
           echo Upload new binaries
           FOLDER=build/install/risa/bin
