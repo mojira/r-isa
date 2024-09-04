@@ -53,7 +53,7 @@ jobs:
       with:
         azcliversion: latest
         inlineScript: |
-          sudo dnf -y install rsync
+          dnf -y install rsync
           ARGS="-avh --delete"
           USERNAME=risa
           SERVER_DESTINATION=/home/risa/r-isa
