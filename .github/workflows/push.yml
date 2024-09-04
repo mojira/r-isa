@@ -68,7 +68,7 @@ jobs:
           rsync $ARGS -e 'ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 50022' $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
 
           echo Run internal deploy script
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 50022 $USERNAME@127.0.0.1:$SERVER_DESTINATION  << EOF
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 50022 $USERNAME@127.0.0.1  << EOF
                 /usr/bin/screen -ls | /bin/egrep 'Detached|Attached' | /usr/bin/cut -d. -f1 | /usr/bin/awk '{print $1}' | /usr/bin/xargs /bin/kill
                 sleep 1
                 cd r-isa
