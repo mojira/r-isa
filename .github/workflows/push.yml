@@ -42,13 +42,11 @@ jobs:
           ARGS="-avh --delete"
           USERNAME=risa
           SERVER_DESTINATION=/home/risa/r-isa
-          SSHPATH="$HOME/.ssh"
-          rm -rf "$SSHPATH" 
-          mkdir "$SSHPATH"
+          SSHPATH=$HOME/.ssh
+          rm -rf $SSHPATH
+          mkdir $SSHPATH
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > $SSHPATH/key
           chmod 600 $SSHPATH/key
-
-          az config set extension.dynamic_install_allow_preview=true
 
           echo Opening tunnel
           az network bastion tunnel --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --target-resource-id ${{ secrets.RESOURCE_ID }} --resource-port 22 --port 50022 &
