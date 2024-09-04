@@ -42,11 +42,12 @@ jobs:
           ARGS="-avh --delete"
           USERNAME=risa
           SERVER_DESTINATION=/home/risa/r-isa
-          SSHPATH=$HOME/.ssh
-          rm -rf $SSHPATH
-          mkdir $SSHPATH
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > $SSHPATH/key
-          chmod 600 $SSHPATH/key
+
+          echo Setting up SSH key
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
 
           echo Opening tunnel
           az network bastion tunnel --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --target-resource-id ${{ secrets.RESOURCE_ID }} --resource-port 22 --port 50022 &
@@ -56,15 +57,15 @@ jobs:
 
           echo Upload new libraries
           FOLDER=build/install/risa/lib
-          rsync $ARGS  -e 'ssh -i $SSHPATH/key -o StrictHostKeyChecking=no -p 50022' $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
+          rsync $ARGS -e 'ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 50022' $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
 
           echo Upload new binaries
           FOLDER=build/install/risa/bin
-          rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
+          rsync $ARGS -e 'ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 50022' $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
 
           echo Upload new configuration
           FOLDER=risa.yml
-          rsync $ARGS $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
+          rsync $ARGS -e 'ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 50022' $GITHUB_WORKSPACE/$FOLDER $USERNAME@127.0.0.1:$SERVER_DESTINATION
 
           echo Run internal deploy script
           /usr/bin/screen -ls | /bin/egrep 'Detached|Attached' | /usr/bin/cut -d. -f1 | /usr/bin/awk '{print $1}' | /usr/bin/xargs /bin/kill
