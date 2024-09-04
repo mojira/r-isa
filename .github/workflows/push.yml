@@ -44,8 +44,8 @@ jobs:
           SSHPATH="$HOME/.ssh"
           rm -rf "$SSHPATH" 
           mkdir "$SSHPATH"
-          echo "${{ secrets.BASTION_NAME }}" > "$SSHPATH/key"
-          chmod 600 "$SSHPATH/key"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > $SSHPATH/key
+          chmod 600 $SSHPATH/key
 
           az config set extension.dynamic_install_allow_preview=true
 
