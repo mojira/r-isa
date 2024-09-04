@@ -1,17 +1,17 @@
 name: Build and deploy
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  id-token: write # Require write permission to Fetch an OIDC token.
 
 on:
   push:
     branches: [ master ]
+  # Allow manually triggering deployment
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Build and deploy
     runs-on: ubuntu-latest
 
     steps:
