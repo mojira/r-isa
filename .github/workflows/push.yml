@@ -48,12 +48,8 @@ jobs:
 
           echo Wait for bastion tunnel to open
           az network bastion wait --created --name ${{ secrets.BASTION_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --debug
-    - name: Deploy
-      uses: azure/cli@v2
-      with:
-        azcliversion: latest
-        inlineScript: |
-          dnf -y install rsync
+    - run: |
+          sudo apt -y install rsync
           ARGS="-avh --delete"
           USERNAME=risa
           SERVER_DESTINATION=/home/risa/r-isa
