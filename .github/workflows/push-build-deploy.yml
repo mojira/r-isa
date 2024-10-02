@@ -46,6 +46,7 @@ jobs:
           build/install/risa/lib
           build/install/risa/bin
           risa.yml
+          test/conf.txt
         artifact_destination: /home/risa/r-isa
         script: |
           /usr/bin/screen -ls | /bin/egrep 'Detached|Attached' | /usr/bin/cut -d. -f1 | /usr/bin/awk '{print $1}' | /usr/bin/xargs /bin/kill
